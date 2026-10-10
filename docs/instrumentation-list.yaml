@@ -11,8 +11,8 @@ file_format: 0.8
 definitions:
   configurations:
     common.controller-telemetry.enabled:
-      name: otel.instrumentation.common.experimental.controller-telemetry.enabled
-      declarative_name: java.common.controller_telemetry/development.enabled
+      name: otel.instrumentation.common.controller-telemetry.enabled
+      declarative_name: java.common.controller_telemetry.enabled
       description: Enables the creation of experimental controller spans.
       type: boolean
       default: false
@@ -53,6 +53,15 @@ definitions:
         Enables augmenting queries with a comment containing tracing information. An instrumentation-specific setting takes precedence. See [sqlcommenter](https://google.github.io/sqlcommenter/) for more info. WARNING: augmenting queries with tracing context will make query texts unique, which may have adverse impact on database performance.
       type: boolean
       default: false
+    common.deprecated-controller-telemetry.enabled:
+      name: otel.instrumentation.common.experimental.controller-telemetry.enabled
+      declarative_name: java.common.controller_telemetry/development.enabled
+      description: 'Deprecated: use `otel.instrumentation.common.controller-telemetry.enabled`
+        instead. This setting is ignored under v3-preview and will be removed in 3.0.'
+      type: boolean
+      default: false
+      deprecated: true
+      replaced_by: otel.instrumentation.common.controller-telemetry.enabled
     common.logging.span-id:
       name: otel.instrumentation.common.logging.span-id
       declarative_name: java.common.logging.span_id
@@ -414,9 +423,12 @@ definitions:
     otel.instrumentation.common.experimental.view-telemetry.enabled:
       name: otel.instrumentation.common.experimental.view-telemetry.enabled
       declarative_name: java.common.view_telemetry/development.enabled
-      description: Enables the creation of experimental view spans.
+      description: |
+        Deprecated: use `otel.instrumentation.common.view-telemetry.enabled` instead. This setting is ignored under v3-preview and will be removed in 3.0.
       type: boolean
       default: false
+      deprecated: true
+      replaced_by: otel.instrumentation.common.view-telemetry.enabled
     otel.instrumentation.common.logging.structured-attributes.excluded:
       name: otel.instrumentation.common.logging.structured-attributes.excluded
       declarative_name: java.common.logging.structured_attributes.excluded
@@ -466,6 +478,12 @@ definitions:
       description: Enables capturing the user.roles attribute when v3 preview is enabled.
         This property and the associated attribute are not supported when v3 preview
         is disabled.
+      type: boolean
+      default: false
+    otel.instrumentation.common.view-telemetry.enabled:
+      name: otel.instrumentation.common.view-telemetry.enabled
+      declarative_name: java.common.view_telemetry.enabled
+      description: Enables the creation of experimental view spans.
       type: boolean
       default: false
     otel.instrumentation.couchbase.emit-experimental-telemetry-0f4c9e50:
@@ -9511,8 +9529,9 @@ libraries:
   - io.dropwizard:dropwizard-views:(,3.0.0)
   configuration_refs:
   - otel.instrumentation.common.experimental.view-telemetry.enabled
+  - otel.instrumentation.common.view-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.view-telemetry.enabled=true
+  - when: otel.instrumentation.common.view-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes: []
@@ -9911,8 +9930,6 @@ libraries:
         type: LONG
       - name: server.address
         type: STRING
-      - name: server.port
-        type: LONG
 - name: elasticsearch-transport-6.0
   display_name: Elasticsearch Transport Client
   description: |
@@ -10065,8 +10082,9 @@ libraries:
   - com.twitter:finatra-http_2.12:[2.9.0,]
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -10210,8 +10228,9 @@ libraries:
   - org.grails:grails-web-url-mappings:[3.0,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -11369,8 +11388,9 @@ libraries:
   - javax.ws.rs:jsr311-api:[0.5,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -11395,6 +11415,7 @@ libraries:
   - javax.ws.rs:javax.ws.rs-api:[,]
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   - otel.instrumentation.jaxrs.experimental-span-attributes
   telemetry:
   - when: default
@@ -11422,6 +11443,7 @@ libraries:
   - org.apache.tomee:openejb-cxf-rs:(8,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   - otel.instrumentation.jaxrs.experimental-span-attributes
   telemetry:
   - when: default
@@ -11459,6 +11481,7 @@ libraries:
   - org.glassfish.jersey.core:jersey-server:[2.0,3.0.0)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   - otel.instrumentation.jaxrs.experimental-span-attributes
   telemetry:
   - when: default
@@ -11496,6 +11519,7 @@ libraries:
   - org.jboss.resteasy:resteasy-jaxrs:[3.5.0.Final,4)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   - otel.instrumentation.jaxrs.experimental-span-attributes
   telemetry:
   - when: default
@@ -11533,6 +11557,7 @@ libraries:
   - org.jboss.resteasy:resteasy-jaxrs:[3.1.0.Final,3.5.0.Final)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   - otel.instrumentation.jaxrs.experimental-span-attributes
   telemetry:
   - when: default
@@ -11570,6 +11595,7 @@ libraries:
   - jakarta.ws.rs:jakarta.ws.rs-api:[3.0.0,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   - otel.instrumentation.jaxrs.experimental-span-attributes
   telemetry:
   - when: default
@@ -11597,6 +11623,7 @@ libraries:
   - org.glassfish.jersey.core:jersey-server:[3.0.0,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   - otel.instrumentation.jaxrs.experimental-span-attributes
   telemetry:
   - when: default
@@ -11634,9 +11661,10 @@ libraries:
   - org.jboss.resteasy:resteasy-core:[6.0.0.Final,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   - otel.instrumentation.jaxrs.experimental-span-attributes
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -11644,7 +11672,7 @@ libraries:
         type: STRING
       - name: code.namespace
         type: STRING
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true,otel.instrumentation.jaxrs.experimental-span-attributes=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true,otel.instrumentation.jaxrs.experimental-span-attributes=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -11669,8 +11697,9 @@ libraries:
   - javax.xml.ws:jaxws-api:[2.0,]
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -11694,8 +11723,9 @@ libraries:
   - org.apache.axis2:axis2-jaxws:[1.6.0,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes: []
@@ -11715,6 +11745,7 @@ libraries:
   - org.apache.cxf:cxf-rt-frontend-jaxws:[3.0.0,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
 - name: jaxws-2.0-metro-2.2
   display_name: Metro JAX-WS
   description: |
@@ -11731,6 +11762,7 @@ libraries:
   - com.sun.xml.ws:jaxws-rt:[2.2,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
 - name: jaxws-jws-api-1.1
   display_name: JWS API
   description: |
@@ -11747,8 +11779,9 @@ libraries:
   - javax.jws:javax.jws-api:[1.1,]
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -12525,8 +12558,9 @@ libraries:
   - com.jfinal:jfinal:[3.2,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -12824,8 +12858,9 @@ libraries:
   - org.glassfish:javax.faces:[2.0.7,3)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes: []
@@ -12845,8 +12880,9 @@ libraries:
   - org.glassfish:jakarta.faces:[3,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes: []
@@ -12865,8 +12901,9 @@ libraries:
   - org.apache.myfaces.core:myfaces-impl:[1.2,3)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes: []
@@ -12886,8 +12923,9 @@ libraries:
   - org.apache.myfaces.core:myfaces-impl:[3,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes: []
@@ -12906,13 +12944,14 @@ libraries:
   - org.apache.tomcat:tomcat-jasper:[7.0.19,10)
   configuration_refs:
   - otel.instrumentation.common.experimental.view-telemetry.enabled
+  - otel.instrumentation.common.view-telemetry.enabled
   - otel.instrumentation.jsp.experimental-span-attributes
   telemetry:
-  - when: otel.instrumentation.common.experimental.view-telemetry.enabled=true
+  - when: otel.instrumentation.common.view-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes: []
-  - when: otel.instrumentation.common.experimental.view-telemetry.enabled=true,otel.instrumentation.jsp.experimental-span-attributes=true
+  - when: otel.instrumentation.common.view-telemetry.enabled=true,otel.instrumentation.jsp.experimental-span-attributes=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -16147,8 +16186,9 @@ libraries:
   - com.typesafe.play:play_2.11:[2.4.0,2.6)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes: []
@@ -16171,8 +16211,9 @@ libraries:
   - org.playframework:play_3:[2.6.0,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes: []
@@ -16907,8 +16948,9 @@ libraries:
   - io.ratpack:ratpack-core:[1.4.0,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes: []
@@ -16935,6 +16977,7 @@ libraries:
   - io.ratpack:ratpack-core:[1.7.0,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   - common.peer-service-mapping
   - http.client.capture-request-headers
   - http.client.capture-response-headers
@@ -16997,7 +17040,7 @@ libraries:
         type: STRING
       - name: user_agent.original
         type: STRING
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     metric_refs:
     - http.client.request.duration-a64b5297
     spans:
@@ -18858,6 +18901,7 @@ libraries:
         type: STRING
   - when: otel.semconv-stability.preview=messaging
     metric_refs:
+    - messaging.client.consumed.messages-e8268bc3
     - messaging.process.duration-ab13a22e
     spans:
     - span_kind: CONSUMER
@@ -19116,6 +19160,7 @@ libraries:
   - org.springframework:spring-webflux:[5.0.0.RELEASE,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
   - when: default
     metric_refs:
@@ -19139,7 +19184,7 @@ libraries:
         type: LONG
       - name: url.full
         type: STRING
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -19147,7 +19192,7 @@ libraries:
         type: STRING
       - name: code.namespace
         type: STRING
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true,otel.semconv-stability.opt-in=service.peer
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true,otel.semconv-stability.opt-in=service.peer
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -19155,7 +19200,7 @@ libraries:
         type: STRING
       - name: code.namespace
         type: STRING
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true,otel.semconv.exception.signal.preview=logs
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true,otel.semconv.exception.signal.preview=logs
     metric_refs:
     - http.client.request.duration-a64b5297
     spans:
@@ -19334,10 +19379,12 @@ libraries:
   - org.springframework:spring-webmvc:[3.1.0.RELEASE,6)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   - otel.instrumentation.common.experimental.view-telemetry.enabled
+  - otel.instrumentation.common.view-telemetry.enabled
   - otel.instrumentation.spring-webmvc.experimental-span-attributes
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true,otel.instrumentation.common.experimental.view-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true,otel.instrumentation.common.view-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -19345,7 +19392,7 @@ libraries:
         type: STRING
       - name: code.namespace
         type: STRING
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true,otel.instrumentation.common.experimental.view-telemetry.enabled=true,otel.instrumentation.spring-webmvc.experimental-span-attributes=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true,otel.instrumentation.common.view-telemetry.enabled=true,otel.instrumentation.spring-webmvc.experimental-span-attributes=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -19426,10 +19473,12 @@ libraries:
   - org.springframework:spring-webmvc:[6.0.0,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   - otel.instrumentation.common.experimental.view-telemetry.enabled
+  - otel.instrumentation.common.view-telemetry.enabled
   - otel.instrumentation.spring-webmvc.experimental-span-attributes
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true,otel.instrumentation.common.experimental.view-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true,otel.instrumentation.common.view-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -19437,7 +19486,7 @@ libraries:
         type: STRING
       - name: code.namespace
         type: STRING
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true,otel.instrumentation.common.experimental.view-telemetry.enabled=true,otel.instrumentation.spring-webmvc.experimental-span-attributes=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true,otel.instrumentation.common.view-telemetry.enabled=true,otel.instrumentation.spring-webmvc.experimental-span-attributes=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -19463,8 +19512,9 @@ libraries:
   - org.springframework.ws:spring-ws-core:[2.0.0.RELEASE,]
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -19554,8 +19604,9 @@ libraries:
   - org.apache.struts:struts2-core:[2.1.0,7)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -19580,8 +19631,9 @@ libraries:
   - org.apache.struts:struts2-core:[7.0.0,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes:
@@ -19605,8 +19657,9 @@ libraries:
   - org.apache.tapestry:tapestry-core:[5.4.0,)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
   telemetry:
-  - when: otel.instrumentation.common.experimental.controller-telemetry.enabled=true
+  - when: otel.instrumentation.common.controller-telemetry.enabled=true
     spans:
     - span_kind: INTERNAL
       attributes: []
@@ -20044,6 +20097,7 @@ libraries:
   - com.vaadin:flow-server:[3.1.0,25.0.0)
   configuration_refs:
   - common.controller-telemetry.enabled
+  - common.deprecated-controller-telemetry.enabled
 - name: vertx-http-client-3.0
   display_name: Vert.x HTTP Client
   description: |
